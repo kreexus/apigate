@@ -9,15 +9,15 @@ class DataSchema extends \mmaurice\apigate\builders\SchemaBuilder
 {
     protected static function createObject(Response $response, $asArray = false)
     {
-        if (strpos($response->getHeader('Content-Type')[0], 'application/json') === false) {
-            if (strlen($response->getBody()) > 0) {
-                throw new Exception($response->getBody());
+        if (strpos($response->getResponseHeader()['content-type'], 'application/json') === false) {
+            if (strlen($response->getRawResponseBody()) > 0) {
+                throw new Exception($response->getRawResponseBody());
             }
 
             throw new Exception("Received data is not JSON.");
         }
 
-        $arguments = json_decode($response->getBody(), true);
+        $arguments = json_decode($response->getRawResponseBody(), true);
 
         $class = get_called_class();
 
