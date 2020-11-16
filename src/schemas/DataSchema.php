@@ -11,7 +11,7 @@ class DataSchema extends \mmaurice\apigate\builders\SchemaBuilder
     {
         if (strpos($response->getHeader('Content-Type')[0], 'application/json') === false) {
             if (strlen($response->getBody()) > 0) {
-                throw new Exception($response->getBody() . ' 123123213213123');
+                throw new Exception($response->getBody());
             }
 
             throw new Exception("Received data is not JSON.");

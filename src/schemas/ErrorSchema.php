@@ -9,8 +9,8 @@ class ErrorSchema extends \mmaurice\apigate\schemas\DataSchema
 {
     public static function build(Response $response, $asArray = false)
     {
-        if (!in_array(intdiv(intval($response->getStatusCode()), 100), [4, 5])) {
-            throw new Exception("Received wrong code: \"{$response->getStatusCode()}\".");
+        if (!in_array(intdiv(intval($response->getResponseCode()), 100), [4, 5])) {
+            throw new Exception("Received wrong code: \"{$response->getResponseCode()}\".");
         }
 
         return self::createObject($response, $asArray);
