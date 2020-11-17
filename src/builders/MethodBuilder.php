@@ -51,9 +51,9 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
         return Request::GET;
     }
 
-    protected function url()
+    protected function url($url = '')
     {
-        return '';
+        return $url;
     }
 
     protected function urlParams()
@@ -63,7 +63,7 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
 
     protected function body()
     {
-        return [];
+        return get_object_vars($this);
     }
 
     protected function headers()

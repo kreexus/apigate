@@ -8,10 +8,12 @@ use \mmaurice\apigate\exceptions\Exception;
 abstract class SchemaComponent
 {
     const RULE_TYPE_KEY = 0;
-    const RULE_FORMAT_KEY = 1;
-    const RULE_FORMAT_OPTIONS = 2;
     const RULE_REQUIRED_KEY = 1;
     const RULE_DEFAULT_KEY = 2;
+
+    const RULE_FORMAT = 0;
+    const RULE_FORMAT_KEY = 1;
+    const RULE_FORMAT_OPTIONS = 2;
 
     /**
      * Набор правил фильтрации переменных
@@ -43,6 +45,11 @@ abstract class SchemaComponent
         return json_encode(get_object_vars($this));
     }
 
+    public function export()
+    {
+        return get_object_vars($this);
+    }
+
     protected function createFromArray(array $fields = [])
     {
         $fieldsNames = array_keys($fields);
@@ -58,17 +65,9 @@ abstract class SchemaComponent
                 }
 
                 if (array_key_exists($fieldName, $fields)) {
-                    $type = $rule[self::RULE_TYPE_KEY];
-                    $formatMethod = null;
-                    $formatOptions = [];
-
-                    if (is_array($rule[self::RULE_TYPE_KEY])) {
-                        $type = $rule[self::RULE_TYPE_KEY][self::RULE_TYPE_KEY];
-                        $formatMethod = $rule[self::RULE_TYPE_KEY][self::RULE_FORMAT_KEY];
-                        if (array_key_exists(self::RULE_FORMAT_OPTIONS, $rule[self::RULE_TYPE_KEY])) {
-                            $formatOptions = $rule[self::RULE_TYPE_KEY][self::RULE_FORMAT_OPTIONS];
-                        }
-                    }
+                    $type = (is_array($rule[self::RULE_TYPE_KEY]) ? (array_key_exists(self::RULE_FORMAT, $rule[self::RULE_TYPE_KEY]) ? $rule[self::RULE_TYPE_KEY][self::RULE_FORMAT] : $rule[self::RULE_TYPE_KEY]) : $rule[self::RULE_TYPE_KEY]);
+                    $formatMethod = (is_array($rule[self::RULE_TYPE_KEY]) ? (array_key_exists(self::RULE_FORMAT_KEY, $rule[self::RULE_TYPE_KEY]) ? $rule[self::RULE_TYPE_KEY][self::RULE_FORMAT_KEY] : null) : null);
+                    $formatOptions = (is_array($rule[self::RULE_TYPE_KEY]) ? (array_key_exists(self::RULE_FORMAT_OPTIONS, $rule[self::RULE_TYPE_KEY]) ? $rule[self::RULE_TYPE_KEY][self::RULE_FORMAT_OPTIONS] : []) : []);
 
                     $this->$fieldName = $fields[$fieldName];
 
@@ -124,6 +123,10 @@ abstract class SchemaComponent
     protected function checkType($value, $type)
     {
         if (class_exists($type)) {
+            if ($value instanceof SchemaComponent) {
+                $value = $value->export();
+            }
+
             return new $type($value);
         } else {
             if (!settype($value, $type)) {
