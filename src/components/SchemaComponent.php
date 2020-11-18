@@ -71,8 +71,10 @@ abstract class SchemaComponent
 
                     $this->$fieldName = $fields[$fieldName];
 
-                    if (!$this->checkFormat($this->$fieldName, $type, $formatMethod, $formatOptions)) {
-                        throw new Exception("Field \"{$fieldName}\" is not a \"{$formatMethod}\".");
+                    if (!array_key_exists(self::RULE_DEFAULT_KEY, $rule) or ($this->$fieldName !== $rule[self::RULE_DEFAULT_KEY])) {
+                        if (!$this->checkFormat($this->$fieldName, $type, $formatMethod, $formatOptions)) {
+                            throw new Exception("Field \"{$fieldName}\" is not a \"{$formatMethod}\".");
+                        }
                     }
                 } else {
                     if (array_key_exists(self::RULE_DEFAULT_KEY, $rule)) {
