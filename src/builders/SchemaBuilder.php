@@ -18,17 +18,6 @@ abstract class SchemaBuilder extends \mmaurice\apigate\components\SchemaComponen
 
     public static function build(Response $response, $asArray = false)
     {
-        self::$response = $response;
-
-        if (in_array(intdiv(intval($response->getResponseCode()), 100), [1, 2, 3])) {
-            return self::createObject($response, $asArray);
-        }
-
-        return ErrorSchema::build($response);
-    }
-
-    protected static function createObject(Response $response, $asArray = false)
-    {
         if (strpos($response->getResponseHeader()['content-type'], 'application/json') === false) {
             if (strlen($response->getRawResponseBody()) > 0) {
                 throw new Exception($response->getRawResponseBody());

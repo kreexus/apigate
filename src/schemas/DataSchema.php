@@ -7,7 +7,7 @@ use \mmaurice\qurl\Response;
 
 class DataSchema extends \mmaurice\apigate\builders\SchemaBuilder
 {
-    protected static function createObject(Response $response, $asArray = false)
+    public static function build(Response $response, $asArray = false)
     {
         if (strpos($response->getResponseHeader()['content-type'], 'application/json') === false) {
             if (strlen($response->getRawResponseBody()) > 0) {
