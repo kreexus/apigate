@@ -10,6 +10,7 @@ use \mmaurice\qurl\Response;
 class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
 {
     protected $schemas = [];
+    protected $defaultSchema = DataSchema::class;
 
     public function __construct(array $arguments = [])
     {
@@ -46,22 +47,20 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
     protected function buildResponse(Response $response)
     {
         if (is_array($this->schemas) and !empty($this->schemas)) {
-            $schemaClass = null;
-
             if (array_key_exists(intval($response->getResponseCode()), $this->schemas)) {
                 $schemaClass = $this->schemas[intval($response->getResponseCode())];
+
+                return $schemaClass::build($response, $asArray);
             }
 
             if (array_key_exists(intdiv(intval($response->getResponseCode()), 100), $this->schemas)) {
                 $schemaClass = $this->schemas[intdiv(intval($response->getResponseCode()), 100)];
-            }
 
-            if (!is_null($schemaClass)) {
                 return $schemaClass::build($response, $asArray);
             }
         }
 
-        return DataSchema::build($response, $asArray);
+        return $this->defaultSchema::build($response, $asArray);
     }
 
     protected function method()
