@@ -48,19 +48,44 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
     {
         if (is_array($this->schemas) and !empty($this->schemas)) {
             if (array_key_exists(intval($response->getResponseCode()), $this->schemas)) {
-                $schemaClass = $this->schemas[intval($response->getResponseCode())];
+                $asArray = false;
 
-                return $schemaClass::build($response, $asArray);
+                $schemaClass = $this->matchSchema(intval($response->getResponseCode()), $asArray);
+
+                if ($schemaClass) {
+                    return $schemaClass::build($response, $asArray);
+                }
             }
 
             if (array_key_exists(intdiv(intval($response->getResponseCode()), 100), $this->schemas)) {
-                $schemaClass = $this->schemas[intdiv(intval($response->getResponseCode()), 100)];
+                $asArray = false;
 
-                return $schemaClass::build($response, $asArray);
+                $schemaClass = $this->matchSchema(intdiv(intval($response->getResponseCode()), 100), $asArray);
+
+                if ($schemaClass) {
+                    return $schemaClass::build($response, $asArray);
+                }
             }
         }
 
-        return $this->defaultSchema::build($response, $asArray);
+        return $this->defaultSchema::build($response);
+    }
+
+    protected function matchSchema($code, &$asArray = false)
+    {
+        if (array_key_exists($code, $this->schemas)) {
+            $schemaClass = $this->schemas[$code];
+
+            if (is_array($schemaClass)) {
+                $schemaClass = array_shift($schemaClass);
+
+                $asArray = true;
+            }
+
+            return $schemaClass;
+        }
+
+        return false;
     }
 
     protected function method()
