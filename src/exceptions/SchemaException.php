@@ -2,7 +2,7 @@
 
 namespace mmaurice\apigate\exceptions;
 
-class Exception extends \Exception
+class SchemaException extends \Exception
 {
     
 }

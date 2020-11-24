@@ -4,7 +4,7 @@ namespace mmaurice\apigate\classes\Schema;
 
 use \mmaurice\apigate\Client;
 use \mmaurice\apigate\classes\Format;
-use \mmaurice\apigate\exceptions\Exception;
+use \mmaurice\apigate\exceptions\SchemaException;
 
 abstract class Schema
 {
@@ -58,11 +58,11 @@ abstract class Schema
         if (is_array(static::$rules) and !empty(static::$rules)) {
             foreach (static::$rules as $fieldName => $rule) {
                 if (array_key_exists(self::RULE_REQUIRED_KEY, $rule) and ($rule[self::RULE_REQUIRED_KEY] === true) and !in_array($fieldName, $fieldsNames)) {
-                    throw new Exception("Imported data not have required field '{$fieldName}'.");
+                    throw new SchemaException("Imported data not have required field '{$fieldName}'.");
                 }
 
                 if (!array_key_exists(self::RULE_TYPE_KEY, $rule)) {
-                    throw new Exception("Type rule for field '{$fieldName}' is not defined.");
+                    throw new SchemaException("Type rule for field '{$fieldName}' is not defined.");
                 }
 
                 if (array_key_exists($fieldName, $fields)) {
@@ -74,7 +74,7 @@ abstract class Schema
 
                     if (!array_key_exists(self::RULE_DEFAULT_KEY, $rule) or ($this->$fieldName !== $rule[self::RULE_DEFAULT_KEY])) {
                         if (!$this->checkFormat($this->$fieldName, $type, $formatMethod, $formatOptions)) {
-                            throw new Exception("Field \"{$fieldName}\" is not a \"{$formatMethod}\".");
+                            throw new SchemaException("Field \"{$fieldName}\" is not a \"{$formatMethod}\".");
                         }
                     }
                 } else {
@@ -90,11 +90,11 @@ abstract class Schema
     {
         if (!is_null($formatMethod)) {
             if (!class_exists($formatMethod)) {
-                throw new Exception("Validator method '{$formatMethod}' is not found.");
+                throw new SchemaException("Validator method '{$formatMethod}' is not found.");
             }
 
             if (!((new $formatMethod) instanceof Format)) {
-                throw new Exception("Validator method '{$formatMethod}' is not instanced of Format.");
+                throw new SchemaException("Validator method '{$formatMethod}' is not instanced of Format.");
             }
 
             return $formatMethod::valide($value, function ($value, $options = []) {
@@ -119,11 +119,11 @@ abstract class Schema
             return new $type($value);
         } else {
             if (!settype($value, $type)) {
-                throw new Exception("Wrong type '{$type}'.");
+                throw new SchemaException("Wrong type '{$type}'.");
             }
 
             if (gettype($value) !== $type) {
-                throw new Exception("Wrong type '{$type}'.");
+                throw new SchemaException("Wrong type '{$type}'.");
             }
 
             return $value;

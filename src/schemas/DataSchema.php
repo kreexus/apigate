@@ -2,7 +2,7 @@
 
 namespace mmaurice\apigate\schemas;
 
-use \mmaurice\apigate\exceptions\Exception;
+use \mmaurice\apigate\exceptions\SchemaException;
 use \mmaurice\qurl\Response;
 
 class DataSchema extends \mmaurice\apigate\builders\SchemaBuilder
@@ -11,10 +11,10 @@ class DataSchema extends \mmaurice\apigate\builders\SchemaBuilder
     {
         if (strpos($response->getResponseHeader()['content-type'], 'application/json') === false) {
             if (strlen($response->getRawResponseBody()) > 0) {
-                throw new Exception($response->getRawResponseBody());
+                throw new SchemaException($response->getRawResponseBody());
             }
 
-            throw new Exception("Received data is not JSON.");
+            throw new SchemaException("Received data is not JSON.");
         }
 
         $arguments = json_decode($response->getRawResponseBody(), true);

@@ -3,7 +3,7 @@
 namespace mmaurice\apigate\builders;
 
 use \mmaurice\apigate\Client;
-use \mmaurice\apigate\exceptions\Exception;
+use \mmaurice\apigate\exceptions\SchemaException;
 use \mmaurice\apigate\schemas\ErrorSchema;
 use \mmaurice\qurl\Response;
 
@@ -20,10 +20,10 @@ abstract class SchemaBuilder extends \mmaurice\apigate\classes\Schema
     {
         if (strpos($response->getResponseHeader()['content-type'], 'application/json') === false) {
             if (strlen($response->getRawResponseBody()) > 0) {
-                throw new Exception($response->getRawResponseBody());
+                throw new SchemaException($response->getRawResponseBody());
             }
 
-            throw new Exception("Received data is not JSON.");
+            throw new SchemaException("Received data is not JSON.");
         }
 
         $arguments = json_decode($response->getRawResponseBody(), true);
