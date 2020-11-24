@@ -12,17 +12,6 @@ use \ReflectionClass;
 
 abstract class ClientComponent
 {
-    const GET = Request::GET;
-    const POST = Request::POST;
-    const PUT = Request::PUT;
-    const HEAD = Request::HEAD;
-    const DELETE = Request::DELETE;
-    const CONNECT = Request::CONNECT;
-    const OPTIONS = Request::OPTIONS;
-    const PATH = Request::PATH;
-    const TRACE = Request::TRACE;
-    const SEARCH = Request::SEARCH;
-
     public static $appNamespace;
     public static $namespace;
     public static $config;
