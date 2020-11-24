@@ -39,7 +39,7 @@ abstract class SchemaComponent
      *
      * @var array
      */
-    protected $rules = [];
+    protected static $rules = [];
 
     public function __toString()
     {
@@ -55,8 +55,8 @@ abstract class SchemaComponent
     {
         $fieldsNames = array_keys($fields);
 
-        if (is_array($this->rules) and !empty($this->rules)) {
-            foreach ($this->rules as $fieldName => $rule) {
+        if (is_array(static::$rules) and !empty(static::$rules)) {
+            foreach (static::$rules as $fieldName => $rule) {
                 if (array_key_exists(self::RULE_REQUIRED_KEY, $rule) and ($rule[self::RULE_REQUIRED_KEY] === true) and !in_array($fieldName, $fieldsNames)) {
                     throw new Exception("Imported data not have required field '{$fieldName}'.");
                 }
@@ -84,8 +84,6 @@ abstract class SchemaComponent
                 }
             }
         }
-
-        unset($this->rules);
     }
 
     protected function checkFormat(&$value, $type, $formatMethod = null, $formatOptions = [])

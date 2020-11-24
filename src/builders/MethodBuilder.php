@@ -9,6 +9,17 @@ use \mmaurice\qurl\Response;
 
 class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
 {
+    const GET = Request::GET;
+    const POST = Request::POST;
+    const PUT = Request::PUT;
+    const HEAD = Request::HEAD;
+    const DELETE = Request::DELETE;
+    const CONNECT = Request::CONNECT;
+    const OPTIONS = Request::OPTIONS;
+    const PATH = Request::PATH;
+    const TRACE = Request::TRACE;
+    const SEARCH = Request::SEARCH;
+
     protected static $params = [];
     protected static $schemas = [];
     protected static $defaultSchema = DataSchema::class;
@@ -91,7 +102,7 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
 
     protected function method()
     {
-        return Request::GET;
+        return self::GET;
     }
 
     protected function url($url = '')
@@ -140,10 +151,5 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
     protected function headers()
     {
         return [];
-    }
-
-    protected function createFromArray(array $fields = [])
-    {
-        parent::createFromArray($fields);
     }
 }
