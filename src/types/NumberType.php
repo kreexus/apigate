@@ -2,7 +2,7 @@
 
 namespace mmaurice\apigate\types;
 
-class NumberType extends \mmaurice\apigate\components\FormatComponent
+class NumberType extends \mmaurice\apigate\classes\Format
 {
     public static function valide(&$field, $callback = null, $options = [])
     {

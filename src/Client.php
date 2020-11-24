@@ -2,9 +2,9 @@
 
 namespace mmaurice\apigate;
 
-use \mmaurice\apigate\components\ClientConfigComponent;
+use \mmaurice\apigate\classes\ClientConfig;
 
-class Client extends \mmaurice\apigate\components\ClientComponent
+abstract class Client extends \mmaurice\apigate\classes\Client
 {
     public function __construct()
     {

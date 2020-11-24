@@ -1,8 +1,8 @@
 <?php
 
-namespace mmaurice\apigate\components;
+namespace mmaurice\apigate\classes;
 
-class FormatComponent
+class Format
 {
     public static function valide(&$field, $callback = null, $options = [])
     {

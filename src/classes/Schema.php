@@ -1,12 +1,12 @@
 <?php
 
-namespace mmaurice\apigate\components;
+namespace mmaurice\apigate\classes\Schema;
 
 use \mmaurice\apigate\Client;
-use \mmaurice\apigate\components\FormatComponent;
+use \mmaurice\apigate\classes\Format;
 use \mmaurice\apigate\exceptions\Exception;
 
-abstract class SchemaComponent
+abstract class Schema
 {
     const RULE_TYPE_KEY = 0;
     const RULE_REQUIRED_KEY = 1;
@@ -93,8 +93,8 @@ abstract class SchemaComponent
                 throw new Exception("Validator method '{$formatMethod}' is not found.");
             }
 
-            if (!((new $formatMethod) instanceof FormatComponent)) {
-                throw new Exception("Validator method '{$formatMethod}' is not instanced of FormatComponent.");
+            if (!((new $formatMethod) instanceof Format)) {
+                throw new Exception("Validator method '{$formatMethod}' is not instanced of Format.");
             }
 
             return $formatMethod::valide($value, function ($value, $options = []) {

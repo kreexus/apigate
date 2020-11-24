@@ -7,7 +7,7 @@ use \mmaurice\apigate\exceptions\Exception;
 use \mmaurice\apigate\schemas\ErrorSchema;
 use \mmaurice\qurl\Response;
 
-abstract class SchemaBuilder extends \mmaurice\apigate\components\SchemaComponent
+abstract class SchemaBuilder extends \mmaurice\apigate\classes\Schema
 {
     static public $response;
 

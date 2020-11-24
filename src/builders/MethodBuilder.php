@@ -7,7 +7,7 @@ use \mmaurice\apigate\schemas\DataSchema;
 use \mmaurice\qurl\Request;
 use \mmaurice\qurl\Response;
 
-class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
+abstract class MethodBuilder extends \mmaurice\apigate\classes\Schema
 {
     const GET = Request::GET;
     const POST = Request::POST;
@@ -31,15 +31,10 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
 
     public function request()
     {
-        $method = $this->method();
-        $url = [
+        $response = Client::query($this->method(), [
             Client::$config->getUrl() . $this->url(),
             $this->urlParams(),
-        ];
-        $body = $this->body();
-        $headers = $this->headers();
-
-        $response = Client::query($method, $url, $body, $headers);
+        ], $this->body(), $this->headers());
 
         return $this->buildResponse($response);
     }
@@ -62,20 +57,20 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
             if (array_key_exists(intval($response->getResponseCode()), static::$schemas)) {
                 $asArray = false;
 
-                $schemaClass = $this->matchSchema(intval($response->getResponseCode()), $asArray);
+                $Schema = $this->matchSchema(intval($response->getResponseCode()), $asArray);
 
-                if ($schemaClass) {
-                    return $schemaClass::build($response, $asArray);
+                if ($Schema) {
+                    return $Schema::build($response, $asArray);
                 }
             }
 
             if (array_key_exists(intdiv(intval($response->getResponseCode()), 100), static::$schemas)) {
                 $asArray = false;
 
-                $schemaClass = $this->matchSchema(intdiv(intval($response->getResponseCode()), 100), $asArray);
+                $Schema = $this->matchSchema(intdiv(intval($response->getResponseCode()), 100), $asArray);
 
-                if ($schemaClass) {
-                    return $schemaClass::build($response, $asArray);
+                if ($Schema) {
+                    return $Schema::build($response, $asArray);
                 }
             }
         }
@@ -86,15 +81,15 @@ class MethodBuilder extends \mmaurice\apigate\components\SchemaComponent
     protected function matchSchema($code, &$asArray = false)
     {
         if (array_key_exists($code, static::$schemas)) {
-            $schemaClass = static::$schemas[$code];
+            $Schema = static::$schemas[$code];
 
-            if (is_array($schemaClass)) {
-                $schemaClass = array_shift($schemaClass);
+            if (is_array($Schema)) {
+                $Schema = array_shift($Schema);
 
                 $asArray = true;
             }
 
-            return $schemaClass;
+            return $Schema;
         }
 
         return false;

@@ -2,8 +2,7 @@
 
 namespace mmaurice\apigate\components;
 
-use \mmaurice\apigate\configs\BaseConfig;
-use \mmaurice\apigate\components\ClientConfigComponent;
+use \mmaurice\apigate\configs\Config;
 use \mmaurice\apigate\exceptions\Exception;
 use \mmaurice\qurl\Client;
 use \mmaurice\qurl\Request;
@@ -21,7 +20,7 @@ abstract class ClientComponent
 
     protected function __construct()
     {
-        self::$config = new BaseConfig;
+        self::$config = new Config;
         self::$client = new Client;
 
         self::$appNamespace = (new ReflectionClass($this))->getNamespaceName();
@@ -46,7 +45,7 @@ abstract class ClientComponent
         return self::$instance;
     }
 
-    public function config(ClientConfigComponent $config)
+    public function config(Config $config)
     {
         self::$config = $config;
     }

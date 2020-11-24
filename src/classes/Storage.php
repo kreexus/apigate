@@ -1,10 +1,10 @@
 <?php
 
-namespace mmaurice\apigate\components;
+namespace mmaurice\apigate\classes;
 
 use \mmaurice\apigate\exceptions\Exception;
 
-class StorageComponent
+abstract class Storage
 {
     protected $options = [];
 

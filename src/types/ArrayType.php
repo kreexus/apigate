@@ -2,7 +2,7 @@
 
 namespace mmaurice\apigate\types;
 
-class ArrayType extends \mmaurice\apigate\components\FormatComponent
+class ArrayType extends \mmaurice\apigate\classes\Format
 {
     public static function valide(&$fields, $callback = null, $options = [])
     {

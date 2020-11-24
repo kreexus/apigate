@@ -2,7 +2,7 @@
 
 namespace mmaurice\apigate\types;
 
-class EnumType extends \mmaurice\apigate\components\FormatComponent
+class EnumType extends \mmaurice\apigate\classes\Format
 {
     public static function valide(&$field, $callback = null, $options = [])
     {
