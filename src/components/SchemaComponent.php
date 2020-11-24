@@ -3,6 +3,7 @@
 namespace mmaurice\apigate\components;
 
 use \mmaurice\apigate\Client;
+use \mmaurice\apigate\components\FormatComponent;
 use \mmaurice\apigate\exceptions\Exception;
 
 abstract class SchemaComponent
@@ -90,19 +91,15 @@ abstract class SchemaComponent
     protected function checkFormat(&$value, $type, $formatMethod = null, $formatOptions = [])
     {
         if (!is_null($formatMethod)) {
-            $validator = null;
-
-            if (class_exists($this->makeValidator($formatMethod, Client::$appNamespace))) {
-                $validator = $this->makeValidator($formatMethod, Client::$appNamespace);
-            } else if (class_exists($this->makeValidator($formatMethod, Client::$namespace))) {
-                $validator = $this->makeValidator($formatMethod, Client::$namespace);
-            }
-
-            if (is_null($validator)) {
+            if (!class_exists($formatMethod)) {
                 throw new Exception("Validator method '{$formatMethod}' is not found.");
             }
 
-            return $validator::valide($value, function ($value, $options = []) {
+            if (!((new $formatMethod) instanceof FormatComponent)) {
+                throw new Exception("Validator method '{$formatMethod}' is not instanced of FormatComponent.");
+            }
+
+            return $formatMethod::valide($value, function ($value, $options = []) {
                 return $this->checkType($value, $options['type']);
             }, array_merge([
                 'type' => $type,
@@ -112,14 +109,6 @@ abstract class SchemaComponent
 
             return true;
         }
-    }
-
-    protected function makeValidator($validator, $namespace)
-    {
-        $namespace = '\\' . $namespace . '\\formats\\' . ucfirst($validator);
-        $namespace = str_replace('/', '\\', $namespace);
-
-        return $namespace;
     }
 
     protected function checkType($value, $type)
