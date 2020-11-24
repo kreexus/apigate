@@ -1,8 +1,8 @@
 <?php
 
-namespace mmaurice\apigate\formats;
+namespace mmaurice\apigate\types;
 
-class ArrayFormat extends \mmaurice\apigate\components\FormatComponent
+class ArrayType extends \mmaurice\apigate\components\FormatComponent
 {
     public static function valide(&$fields, $callback = null, $options = [])
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace mmaurice\apigate\formats;
+namespace mmaurice\apigate\types;
 
-class NumberFormat extends \mmaurice\apigate\components\FormatComponent
+class NumberType extends \mmaurice\apigate\components\FormatComponent
 {
     public static function valide(&$field, $callback = null, $options = [])
     {
