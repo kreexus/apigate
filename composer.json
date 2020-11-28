@@ -10,7 +10,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.6",
-        "mmaurice/qurl": "0.1"
+        "mmaurice/qurl": "^0.1.1"
     },
     "autoload": {
         "psr-4": {
