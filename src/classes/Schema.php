@@ -1,6 +1,6 @@
 <?php
 
-namespace mmaurice\apigate\classes\Schema;
+namespace mmaurice\apigate\classes;
 
 use \mmaurice\apigate\Client;
 use \mmaurice\apigate\classes\Format;
@@ -23,7 +23,7 @@ abstract class Schema
      * 
      * $rules = [
      *     'var1' => ['string'],
-     *     'var2' => [['double', 'numberFormat']],
+     *     'var2' => [['double', 'NumberType']],
      *     'var3' => [['string', 'enumFormat', ['enum' => [self::STATUS_ONLINE, self::STATUS_OFFLINE]]]],
      *     'var4' => ['integer', true],
      *     'var5' => ['double', false, 1.5],
@@ -31,7 +31,7 @@ abstract class Schema
      * ];
      * 
      * var1 - переменная типа "string"
-     * var2 - переменная типа "double", которая будет проверена через класс-валидатор NumberFormat
+     * var2 - переменная типа "double", которая будет проверена через класс-валидатор NumberType
      * var3 - переменная типа "string", которая будет проверена через класс-валидатор EnumFormat, к которому будет применен следующий за этим массив опций
      * var4 - переменная типа "integer", указание которой является обязательным
      * var5 - переменная типа "double", указание которой не является обязательным, но которая имеет значение по-умолчанию, равное 1.5
@@ -97,11 +97,9 @@ abstract class Schema
                 throw new SchemaException("Validator method '{$formatMethod}' is not instanced of Format.");
             }
 
-            return $formatMethod::valide($value, function ($value, $options = []) {
-                return $this->checkType($value, $options['type']);
-            }, array_merge([
-                'type' => $type,
-            ], $formatOptions));
+            $value = $this->checkType($value, $type);
+
+            return $formatMethod::valide($value, $formatOptions);
         } else {
             $value = $this->checkType($value, $type);
 

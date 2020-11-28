@@ -2,21 +2,10 @@
 
 namespace mmaurice\apigate\classes;
 
-class Format
+abstract class Format
 {
-    public static function valide(&$field, $callback = null, $options = [])
+    public static function valide(&$field, $options = [])
     {
-        $field = self::format($field, $callback, $options);
-
         return true;
-    }
-
-    protected static function format($field, $callback = null, $options = [])
-    {
-        if (!is_null($callback)) {
-            $field = $callback($field, $options);
-        }
-
-        return $field;
     }
 }

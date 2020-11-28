@@ -1,15 +1,15 @@
 <?php
 
-namespace mmaurice\apigate\components;
+namespace mmaurice\apigate\classes;
 
 use \mmaurice\apigate\configs\Config;
 use \mmaurice\apigate\exceptions\Exception;
-use \mmaurice\qurl\Client;
-use \mmaurice\qurl\Request;
-use \mmaurice\qurl\Response;
+use \mmaurice\qurl\Client as QurlClient;
+use \mmaurice\qurl\Request as QurlRequest;
+use \mmaurice\qurl\Response as QurlResponse;
 use \ReflectionClass;
 
-abstract class ClientComponent
+abstract class Client
 {
     public static $appNamespace;
     public static $namespace;
@@ -21,7 +21,7 @@ abstract class ClientComponent
     protected function __construct()
     {
         self::$config = new Config;
-        self::$client = new Client;
+        self::$client = new QurlClient;
 
         self::$appNamespace = (new ReflectionClass($this))->getNamespaceName();
     }
@@ -59,52 +59,52 @@ abstract class ClientComponent
 
     public static function get($url, $body = [], $headers = [])
     {
-        return self::query(Request::GET, $query, $body, $headers);
+        return self::query(QurlRequest::GET, $query, $body, $headers);
     }
 
     public static function post($url, $body = [], $headers = [])
     {
-        return self::query(Request::POST, $query, $body, $headers);
+        return self::query(QurlRequest::POST, $query, $body, $headers);
     }
 
     public static function put($url, $body = [], $headers = [])
     {
-        return self::query(Request::PUT, $query, $body, $headers);
+        return self::query(QurlRequest::PUT, $query, $body, $headers);
     }
 
     public static function head($url, $body = [], $headers = [])
     {
-        return self::query(Request::HEAD, $query, $body, $headers);
+        return self::query(QurlRequest::HEAD, $query, $body, $headers);
     }
 
     public static function delete($url, $body = [], $headers = [])
     {
-        return self::query(Request::DELETE, $query, $body, $headers);
+        return self::query(QurlRequest::DELETE, $query, $body, $headers);
     }
 
     public static function connect($url, $body = [], $headers = [])
     {
-        return self::query(Request::CONNECT, $query, $body, $headers);
+        return self::query(QurlRequest::CONNECT, $query, $body, $headers);
     }
 
     public static function options($url, $body = [], $headers = [])
     {
-        return self::query(Request::OPTIONS, $query, $body, $headers);
+        return self::query(QurlRequest::OPTIONS, $query, $body, $headers);
     }
 
     public static function path($url, $body = [], $headers = [])
     {
-        return self::query(Request::PATH, $query, $body, $headers);
+        return self::query(QurlRequest::PATH, $query, $body, $headers);
     }
 
     public static function trace($url, $body = [], $headers = [])
     {
-        return self::query(Request::TRACE, $query, $body, $headers);
+        return self::query(QurlRequest::TRACE, $query, $body, $headers);
     }
 
     public static function search($url, $body = [], $headers = [])
     {
-        return self::query(Request::SEARCH, $query, $body, $headers);
+        return self::query(QurlRequest::SEARCH, $query, $body, $headers);
     }
 
     public static function callMethod($name, $arguments = [])
