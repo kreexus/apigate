@@ -1,6 +1,6 @@
 <?php
 
-namespace mmaurice\apigate\types\MaskedType;
+namespace mmaurice\apigate\types;
 
 class MaskedType extends \mmaurice\apigate\classes\Format
 {
