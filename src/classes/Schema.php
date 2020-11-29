@@ -97,15 +97,17 @@ abstract class Schema
                 throw new SchemaException("Validator method '{$formatMethod}' is not found.");
             }
 
-            if (!((new $formatMethod) instanceof Format)) {
+            $formatMethodClass = new $formatMethod(array_merge([
+                'type' => $type,
+            ], $formatOptions));
+
+            if (!($formatMethodClass instanceof Format)) {
                 throw new SchemaException("Validator method '{$formatMethod}' is not instanced of Format.");
             }
 
-            return $formatMethod::valide($value, function ($value, $options = []) {
+            return $formatMethodClass->valide($value, function ($value, $options = []) {
                 return $this->checkType($value, $options['type']);
-            }, array_merge([
-                'type' => $type,
-            ], $formatOptions));
+            });
         } else {
             $value = $this->checkType($value, $type);
 

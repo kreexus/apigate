@@ -4,23 +4,19 @@ namespace mmaurice\apigate\classes;
 
 abstract class Format
 {
-    protected static $options = [];
+    protected $options = [];
 
-    public static function valide(&$field, $callback = null, $options = [])
+    public function __construct(array $options = [])
     {
-        $options = array_merge(self::$options, $options);
-
-        $field = self::format($field, $callback, $options);
-
-        return true;
+        $this->options = array_merge($this->options, $options);
     }
 
-    protected static function format($field, $callback = null, $options = [])
+    public function valide(&$field, $callback = null)
     {
         if (!is_null($callback)) {
-            $field = $callback($field, $options);
+            $field = $callback($field, $this->options);
         }
 
-        return $field;
+        return true;
     }
 }

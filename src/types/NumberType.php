@@ -4,9 +4,9 @@ namespace mmaurice\apigate\types;
 
 class NumberType extends \mmaurice\apigate\classes\Format
 {
-    public static function valide(&$field, $callback = null, $options = [])
+    public function valide(&$field, $callback = null)
     {
-        parent::valide($field, $callback, $options);
+        parent::valide($field, $callback);
 
         return true;
     }
