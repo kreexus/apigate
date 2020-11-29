@@ -4,8 +4,10 @@ namespace mmaurice\apigate\types;
 
 class EnumType extends \mmaurice\apigate\classes\Format
 {
-    public static function valide(&$field, $options = [])
+    public static function valide(&$field, $callback = null, $options = [])
     {
+        parent::valide($field, $callback, $options);
+
         if (!array_key_exists('enum', $options) or !is_array($options['enum']) or empty($options['enum'])) {
             return false;
         }

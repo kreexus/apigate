@@ -10,6 +10,8 @@ class UuidType extends \mmaurice\apigate\classes\Format
 
     public static function valide(&$field, $options = [])
     {
+        parent::valide($field, $callback, $options);
+
         if (preg_match(static::$options, trim($field))) {
             return true;
         }

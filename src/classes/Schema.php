@@ -70,6 +70,10 @@ abstract class Schema
                     $formatMethod = (is_array($rule[self::RULE_TYPE_KEY]) ? (array_key_exists(self::RULE_FORMAT_KEY, $rule[self::RULE_TYPE_KEY]) ? $rule[self::RULE_TYPE_KEY][self::RULE_FORMAT_KEY] : null) : null);
                     $formatOptions = (is_array($rule[self::RULE_TYPE_KEY]) ? (array_key_exists(self::RULE_FORMAT_OPTIONS, $rule[self::RULE_TYPE_KEY]) ? $rule[self::RULE_TYPE_KEY][self::RULE_FORMAT_OPTIONS] : []) : []);
 
+                    if ($type === 'float') {
+                        $type = 'double';
+                    }
+
                     $this->$fieldName = $fields[$fieldName];
 
                     if (!array_key_exists(self::RULE_DEFAULT_KEY, $rule) or ($this->$fieldName !== $rule[self::RULE_DEFAULT_KEY])) {
@@ -97,9 +101,11 @@ abstract class Schema
                 throw new SchemaException("Validator method '{$formatMethod}' is not instanced of Format.");
             }
 
-            $value = $this->checkType($value, $type);
-
-            return $formatMethod::valide($value, $formatOptions);
+            return $formatMethod::valide($value, function ($value, $options = []) {
+                return $this->checkType($value, $options['type']);
+            }, array_merge([
+                'type' => $type,
+            ], $formatOptions));
         } else {
             $value = $this->checkType($value, $type);
 
@@ -110,7 +116,7 @@ abstract class Schema
     protected function checkType($value, $type)
     {
         if (class_exists($type)) {
-            if ($value instanceof SchemaComponent) {
+            if ($value instanceof Schema) {
                 $value = $value->export();
             }
 
