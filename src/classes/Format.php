@@ -4,8 +4,12 @@ namespace mmaurice\apigate\classes;
 
 abstract class Format
 {
+    protected static $options = [];
+
     public static function valide(&$field, $callback = null, $options = [])
     {
+        $options = array_merge(self::$options, $options);
+
         $field = self::format($field, $callback, $options);
 
         return true;
