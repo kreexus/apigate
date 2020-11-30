@@ -138,6 +138,8 @@ abstract class MethodBuilder extends \mmaurice\apigate\classes\Schema
                     }
                 }
             };
+        } else {
+            $result = get_object_vars($this);
         }
 
         return $result;
