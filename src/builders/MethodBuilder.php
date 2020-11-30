@@ -48,7 +48,7 @@ abstract class MethodBuilder extends \mmaurice\apigate\classes\Schema
 
     public function getRules()
     {
-        return $this->rules;
+        return self::$rules;
     }
 
     protected function buildResponse(QurlResponse $response)
