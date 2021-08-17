@@ -122,6 +122,10 @@ abstract class Schema
                 $value = $value->export();
             }
 
+            if (is_null($value)) {
+                $value = [];
+            }
+
             return new $type($value);
         } else {
             if (!settype($value, $type)) {
