@@ -4,9 +4,9 @@ namespace mmaurice\apigate\classes;
 
 use \mmaurice\apigate\Client;
 use \mmaurice\apigate\classes\Format;
-use \mmaurice\apigate\exceptions\SchemaException;
+use \mmaurice\apigate\exceptions\ShemaException;
 
-abstract class Schema
+abstract class Shema
 {
     const RULE_TYPE_KEY = 0;
     const RULE_REQUIRED_KEY = 1;
@@ -27,7 +27,7 @@ abstract class Schema
      *     'var3' => [['string', 'enumFormat', ['enum' => [self::STATUS_ONLINE, self::STATUS_OFFLINE]]]],
      *     'var4' => ['integer', true],
      *     'var5' => ['double', false, 1.5],
-     *     'var6' => [NewOrderSchema::class],
+     *     'var6' => [NewOrderShema::class],
      * ];
      * 
      * var1 - переменная типа "string"
@@ -35,7 +35,7 @@ abstract class Schema
      * var3 - переменная типа "string", которая будет проверена через класс-валидатор EnumFormat, к которому будет применен следующий за этим массив опций
      * var4 - переменная типа "integer", указание которой является обязательным
      * var5 - переменная типа "double", указание которой не является обязательным, но которая имеет значение по-умолчанию, равное 1.5
-     * var6 - переменная, содержимое которой будет эквивалентно схеме, описанной в классе NewOrderSchema
+     * var6 - переменная, содержимое которой будет эквивалентно схеме, описанной в классе NewOrderShema
      *
      * @var array
      */
@@ -58,11 +58,11 @@ abstract class Schema
         if (is_array(static::$rules) and !empty(static::$rules)) {
             foreach (static::$rules as $fieldName => $rule) {
                 if (array_key_exists(self::RULE_REQUIRED_KEY, $rule) and ($rule[self::RULE_REQUIRED_KEY] === true) and !in_array($fieldName, $fieldsNames)) {
-                    throw new SchemaException("Imported data not have required field '{$fieldName}'.");
+                    throw new ShemaException("Imported data not have required field '{$fieldName}'.");
                 }
 
                 if (!array_key_exists(self::RULE_TYPE_KEY, $rule)) {
-                    throw new SchemaException("Type rule for field '{$fieldName}' is not defined.");
+                    throw new ShemaException("Type rule for field '{$fieldName}' is not defined.");
                 }
 
                 if (array_key_exists($fieldName, $fields)) {
@@ -78,7 +78,7 @@ abstract class Schema
 
                     if (!array_key_exists(self::RULE_DEFAULT_KEY, $rule) or ($this->$fieldName !== $rule[self::RULE_DEFAULT_KEY])) {
                         if (!$this->checkFormat($this->$fieldName, $type, $formatMethod, $formatOptions)) {
-                            throw new SchemaException("Field \"{$fieldName}\" is not a \"{$formatMethod}\".");
+                            throw new ShemaException("Field \"{$fieldName}\" is not a \"{$formatMethod}\".");
                         }
                     }
                 } else {
@@ -94,7 +94,7 @@ abstract class Schema
     {
         if (!is_null($formatMethod)) {
             if (!class_exists($formatMethod)) {
-                throw new SchemaException("Validator method '{$formatMethod}' is not found.");
+                throw new ShemaException("Validator method '{$formatMethod}' is not found.");
             }
 
             $formatMethodClass = new $formatMethod(array_merge([
@@ -102,7 +102,7 @@ abstract class Schema
             ], $formatOptions));
 
             if (!($formatMethodClass instanceof Format)) {
-                throw new SchemaException("Validator method '{$formatMethod}' is not instanced of Format.");
+                throw new ShemaException("Validator method '{$formatMethod}' is not instanced of Format.");
             }
 
             return $formatMethodClass->valide($value, function ($value, $options = []) {
@@ -118,22 +118,22 @@ abstract class Schema
     protected function checkType($value, $type)
     {
         if (class_exists($type)) {
-            if ($value instanceof Schema) {
+            if ($value instanceof Shema) {
                 $value = $value->export();
             }
 
-            if (is_null($value)) {
+            if (is_null($value) or empty($value)) {
                 $value = [];
             }
 
             return new $type($value);
         } else {
             if (!settype($value, $type)) {
-                throw new SchemaException("Wrong type '{$type}'.");
+                throw new ShemaException("Wrong type '{$type}'.");
             }
 
             if (gettype($value) !== $type) {
-                throw new SchemaException("Wrong type '{$type}'.");
+                throw new ShemaException("Wrong type '{$type}'.");
             }
 
             return $value;

@@ -1,20 +1,20 @@
 <?php
 
-namespace mmaurice\apigate\schemas;
+namespace mmaurice\apigate\shemas;
 
-use \mmaurice\apigate\exceptions\SchemaException;
+use \mmaurice\apigate\exceptions\ShemaException;
 use \mmaurice\qurl\Response;
 
-class DataSchema extends \mmaurice\apigate\builders\SchemaBuilder
+class DataShema extends \mmaurice\apigate\builders\ShemaBuilder
 {
     public static function build(Response $response, $asArray = false)
     {
         if (strpos($response->getResponseHeader()['content-type'], 'application/json') === false) {
             if (strlen($response->getRawResponseBody()) > 0) {
-                throw new SchemaException($response->getRawResponseBody());
+                throw new ShemaException($response->getRawResponseBody());
             }
 
-            throw new SchemaException("Received data is not JSON.");
+            throw new ShemaException("Received data is not JSON.");
         }
 
         $arguments = json_decode($response->getRawResponseBody(), true);

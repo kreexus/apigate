@@ -3,11 +3,11 @@
 namespace mmaurice\apigate\builders;
 
 use \mmaurice\apigate\Client;
-use \mmaurice\apigate\schemas\DataSchema;
+use \mmaurice\apigate\shemas\DataShema;
 use \mmaurice\qurl\Request as QurlRequest;
 use \mmaurice\qurl\Response as QurlResponse;
 
-abstract class MethodBuilder extends \mmaurice\apigate\classes\Schema
+abstract class MethodBuilder extends \mmaurice\apigate\classes\Shema
 {
     const GET = QurlRequest::GET;
     const POST = QurlRequest::POST;
@@ -21,8 +21,8 @@ abstract class MethodBuilder extends \mmaurice\apigate\classes\Schema
     const SEARCH = QurlRequest::SEARCH;
 
     protected static $params = [];
-    protected static $schemas = [];
-    protected static $defaultSchema = DataSchema::class;
+    protected static $shemas = [];
+    protected static $defaultShema = DataShema::class;
 
     public function __construct(array $arguments = [])
     {
@@ -53,43 +53,43 @@ abstract class MethodBuilder extends \mmaurice\apigate\classes\Schema
 
     protected function buildResponse(QurlResponse $response)
     {
-        if (is_array(static::$schemas) and !empty(static::$schemas)) {
-            if (array_key_exists(intval($response->getResponseCode()), static::$schemas)) {
+        if (is_array(static::$shemas) and !empty(static::$shemas)) {
+            if (array_key_exists(intval($response->getResponseCode()), static::$shemas)) {
                 $asArray = false;
 
-                $schema = $this->matchSchema(intval($response->getResponseCode()), $asArray);
+                $shema = $this->matchShema(intval($response->getResponseCode()), $asArray);
 
-                if ($schema) {
-                    return $schema::build($response, $asArray);
+                if ($shema) {
+                    return $shema::build($response, $asArray);
                 }
             }
 
-            if (array_key_exists(intdiv(intval($response->getResponseCode()), 100), static::$schemas)) {
+            if (array_key_exists(intdiv(intval($response->getResponseCode()), 100), static::$shemas)) {
                 $asArray = false;
 
-                $schema = $this->matchSchema(intdiv(intval($response->getResponseCode()), 100), $asArray);
+                $shema = $this->matchShema(intdiv(intval($response->getResponseCode()), 100), $asArray);
 
-                if ($schema) {
-                    return $schema::build($response, $asArray);
+                if ($shema) {
+                    return $shema::build($response, $asArray);
                 }
             }
         }
 
-        return static::$defaultSchema::build($response);
+        return static::$defaultShema::build($response);
     }
 
-    protected function matchSchema($code, &$asArray = false)
+    protected function matchShema($code, &$asArray = false)
     {
-        if (array_key_exists($code, static::$schemas)) {
-            $schema = static::$schemas[$code];
+        if (array_key_exists($code, static::$shemas)) {
+            $shema = static::$shemas[$code];
 
-            if (is_array($schema)) {
-                $schema = array_shift($schema);
+            if (is_array($shema)) {
+                $shema = array_shift($shema);
 
                 $asArray = true;
             }
 
-            return $schema;
+            return $shema;
         }
 
         return false;
@@ -102,6 +102,14 @@ abstract class MethodBuilder extends \mmaurice\apigate\classes\Schema
 
     protected function url($url = '')
     {
+        if (preg_match_all('/\<([^\>]+)\>/', $url, $matches)) {
+            foreach ($matches[1] as $index => $match) {
+                if (property_exists($this, $match)) {
+                    $url = str_replace($matches[0][$index], $this->$match, $url);
+                }
+            }
+        }
+
         return $url;
     }
 
