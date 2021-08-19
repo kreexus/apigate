@@ -2,7 +2,6 @@
 
 namespace mmaurice\apigate\classes;
 
-use \mmaurice\apigate\Client;
 use \mmaurice\apigate\classes\Format;
 use \mmaurice\apigate\exceptions\ShemaException;
 

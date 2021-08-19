@@ -18,15 +18,18 @@ abstract class ShemaBuilder extends \mmaurice\apigate\classes\Shema
 
     public static function build(Response $response, $asArray = false)
     {
-        if (strpos($response->getResponseHeader()['content-type'], 'application/json') === false) {
-            if (strlen($response->getRawResponseBody()) > 0) {
-                throw new ShemaException($response->getRawResponseBody());
+        $responseHeaders = $response->getResponseHeader();
+        $responseRawBody = $response->getRawResponseBody();
+
+        if (array_key_exists('content-type', $responseHeaders) and (strpos($responseHeaders['content-type'], 'application/json') === false)) {
+            if (strlen($responseRawBody) > 0) {
+                throw new ShemaException($responseRawBody);
             }
 
             throw new ShemaException("Received data is not JSON.");
         }
 
-        $arguments = json_decode($response->getRawResponseBody(), true);
+        $arguments = json_decode($responseRawBody, true);
 
         $class = get_called_class();
 

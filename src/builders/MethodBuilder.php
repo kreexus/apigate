@@ -75,7 +75,9 @@ abstract class MethodBuilder extends \mmaurice\apigate\classes\Shema
             }
         }
 
-        return static::$defaultShema::build($response);
+        $shema = static::$defaultShema;
+
+        return $shema::build($response);
     }
 
     protected function matchShema($code, &$asArray = false)
