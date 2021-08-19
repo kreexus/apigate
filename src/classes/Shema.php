@@ -126,6 +126,10 @@ abstract class Shema
                 $value = [];
             }
 
+            if (!is_array($value)) {
+                $value = [$value];
+            }
+
             return new $type($value);
         } else {
             if (!settype($value, $type)) {
